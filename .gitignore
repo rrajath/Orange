@@ -3,6 +3,9 @@
 /.idea/workspace.xml
 /.idea/libraries
 .DS_Store
+.idea/
+*.iml
+gradlew.bat
 
 # Built application files
 *.apk
