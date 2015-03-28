@@ -2,8 +2,29 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".MainActivity">
-    <item android:id="@+id/action_settings"
-          android:title="@string/action_settings"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_favorites"
+        android:title="@string/action_favorites"
+        android:orderInCategory="101"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_rate_app"
+        android:title="@string/action_rate_orange"
+        android:orderInCategory="102"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_feedback"
+        android:title="@string/action_feedback"
+        android:orderInCategory="101"
+        app:showAsAction="never"/>
+
 </menu>
