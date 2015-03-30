@@ -96,6 +96,9 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         public Fragment getItem(int position) {
+            if (position == 0) {
+                return CategoryFragment.newInstance();
+            }
             return TabFragment.getInstance(position);
         }
 
