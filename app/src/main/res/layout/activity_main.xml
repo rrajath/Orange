@@ -6,19 +6,37 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         tools:context=".MainActivity">
 
         <include android:id="@+id/app_bar" layout="@layout/app_bar"/>
 
-        <TextView
-            android:text="@string/hello_world"
-            android:layout_below="@id/app_bar"
-            android:layout_width="wrap_content"
+        <com.rrajath.orange.SlidingTabLayout
+            android:id="@+id/sliding_tabs"
+            android:background="@color/primary_color"
+            android:elevation="@dimen/elevation"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-    </RelativeLayout>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/tab_pager"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/nav_fragment"
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:name="com.rrajath.orange.NavDrawerFragment"
+        app:layout="@layout/nav_drawer_fragment"
+        tools:layout="@layout/nav_drawer_fragment"/>
+
 
 </android.support.v4.widget.DrawerLayout>

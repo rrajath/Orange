@@ -20,4 +20,12 @@
         <item>Rate the app</item>
         <item>Feedback</item>
     </string-array>
+
+    <string-array name="sliding_tabs_array">
+        <item>Top Stories</item>
+        <item>New Stories</item>
+        <item>Ask HN</item>
+        <item>Show HN</item>
+        <item>Jobs</item>
+    </string-array>
 </resources>
