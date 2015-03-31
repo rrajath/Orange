@@ -2,7 +2,6 @@ package com.rrajath.orange;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,18 +9,19 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
-public class MainActivity extends ActionBarActivity {
+import it.neokree.materialtabs.MaterialTab;
+import it.neokree.materialtabs.MaterialTabHost;
+import it.neokree.materialtabs.MaterialTabListener;
+
+public class MainActivity extends ActionBarActivity implements MaterialTabListener {
 
     private Toolbar mToolbar;
     private SlidingTabLayout mSlidingTabs;
     private ViewPager mViewPager;
+    private MaterialTabHost materialTabHost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,23 @@ public class MainActivity extends ActionBarActivity {
 
         mViewPager = (ViewPager)findViewById(R.id.tab_pager);
         mViewPager.setAdapter(new SlidingTabsPagerAdapter(getSupportFragmentManager()));
-        mSlidingTabs = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+        materialTabHost = (MaterialTabHost) findViewById(R.id.material_tab_host);
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                materialTabHost.setSelectedNavigationItem(position);
+            }
+        });
+        for (int i = 0; i < mViewPager.getAdapter().getCount(); i++) {
+            materialTabHost.addTab(
+                    materialTabHost.newTab()
+                            .setText(mViewPager.getAdapter().getPageTitle(i))
+                            .setTabListener(this)
+            );
+        }
+
+/*
+        mSlidingTabs = (SlidingTabLayout) findViewById(R.id.);
         mSlidingTabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
             @Override
             public int getIndicatorColor(int position) {
@@ -49,6 +65,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
         mSlidingTabs.setViewPager(mViewPager);
+*/
     }
 
     @Override
@@ -81,6 +98,21 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onTabSelected(MaterialTab materialTab) {
+        mViewPager.setCurrentItem(materialTab.getPosition());
+    }
+
+    @Override
+    public void onTabReselected(MaterialTab materialTab) {
+
+    }
+
+    @Override
+    public void onTabUnselected(MaterialTab materialTab) {
+
+    }
+
     class SlidingTabsPagerAdapter extends FragmentPagerAdapter {
 
         String[] hnCategories;
@@ -96,10 +128,7 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         public Fragment getItem(int position) {
-            if (position == 0) {
-                return CategoryFragment.newInstance();
-            }
-            return TabFragment.getInstance(position);
+            return CategoryFragment.newInstance();
         }
 
         @Override
@@ -108,24 +137,4 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public static class TabFragment extends Fragment {
-        public static TabFragment getInstance(int position) {
-            TabFragment fragment = new TabFragment();
-            Bundle args = new Bundle();
-            args.putInt("position", position);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.tab_fragment, container, false);
-            TextView textView = (TextView) view.findViewById(R.id.tab_fragment_title);
-            Bundle args = getArguments();
-            if (args != null) {
-                textView.setText("Fragment number: " + args.getInt("position"));
-            }
-            return view;
-        }
-    }
 }

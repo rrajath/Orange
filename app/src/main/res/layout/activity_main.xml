@@ -15,12 +15,23 @@
 
         <include android:id="@+id/app_bar" layout="@layout/app_bar"/>
 
+        <it.neokree.materialtabs.MaterialTabHost
+            android:id="@+id/material_tab_host"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:elevation="@dimen/elevation"
+            app:textColor="@android:color/white"
+            app:primaryColor="@color/primary_color"
+            app:accentColor="@android:color/white" />
+
+<!--
         <com.rrajath.orange.SlidingTabLayout
             android:id="@+id/sliding_tabs"
             android:background="@color/primary_color"
             android:elevation="@dimen/elevation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+-->
 
         <android.support.v4.view.ViewPager
             android:id="@+id/tab_pager"
