@@ -23,6 +23,9 @@ import com.rrajath.orange.data.NavDrawerItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 /**
  * Created by rrajath on 3/28/15.
  */
@@ -30,7 +33,7 @@ public class NavDrawerFragment extends Fragment {
 
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
-    private RecyclerView mRecyclerView;
+    @InjectView(R.id.drawerList) RecyclerView mRecyclerView;
     private ClickListener mClickListener;
     private NavDrawerAdapter mNavDrawerAdapter;
     private List<NavDrawerItem> mNavDrawerItems;
@@ -70,7 +73,7 @@ public class NavDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.nav_drawer_fragment, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.drawerList);
+        ButterKnife.inject(this, view);
         mNavDrawerAdapter = new NavDrawerAdapter(getActivity(), buildNavDrawerItems());
         mRecyclerView.setAdapter(mNavDrawerAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

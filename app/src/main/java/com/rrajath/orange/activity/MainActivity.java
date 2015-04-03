@@ -17,15 +17,17 @@ import com.rrajath.orange.fragment.CategoryFragment;
 import com.rrajath.orange.fragment.NavDrawerFragment;
 import com.rrajath.orange.utils.Constants;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 
 public class MainActivity extends ActionBarActivity implements MaterialTabListener {
 
-    private Toolbar mToolbar;
-    private ViewPager mViewPager;
-    private MaterialTabHost materialTabHost;
+    @InjectView(R.id.app_bar) Toolbar mToolbar;
+    @InjectView(R.id.tab_pager) ViewPager mViewPager;
+    @InjectView(R.id.material_tab_host) MaterialTabHost materialTabHost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +35,9 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
 
         // Set main content view
         setContentView(R.layout.activity_main);
+        ButterKnife.inject(this);
 
         // Set Toolbar
-        mToolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -43,9 +45,7 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
         NavDrawerFragment drawerFragment = (NavDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.nav_fragment);
         drawerFragment.setup((DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
 
-        mViewPager = (ViewPager)findViewById(R.id.tab_pager);
         mViewPager.setAdapter(new SlidingTabsPagerAdapter(getSupportFragmentManager()));
-        materialTabHost = (MaterialTabHost) findViewById(R.id.material_tab_host);
         mViewPager.setOffscreenPageLimit(mViewPager.getAdapter().getCount() - 1);
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override

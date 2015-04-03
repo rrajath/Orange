@@ -9,17 +9,20 @@ import android.view.MenuItem;
 
 import com.rrajath.orange.R;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 
 public class WebViewActivity extends ActionBarActivity {
 
-    private Toolbar toolbar;
+    @InjectView(R.id.app_bar) Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
+        ButterKnife.inject(this);
 
-        toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -1,28 +1,27 @@
 package com.rrajath.orange.data;
 
-import java.util.ArrayList;
+import org.parceler.Parcel;
 
-import lombok.Data;
+import java.util.ArrayList;
 
 /**
  * Created by rrajath on 3/18/15.
  */
 
-@org.parceler.Parcel
-@Data
+@Parcel
 public class Item {
-    long id;
+    public long id;
     boolean deleted;
     String type;
-    String username;
-    long time;
+    public String username;
+    public long time;
     String text;
     boolean dead;
     long parent;
     ArrayList<Long> kids;
-    String url;
-    long score;
-    String title;
+    public String url;
+    public long score;
+    public String title;
     ArrayList<Long> parts;
-    long descendants;
+    public long descendants;
 }

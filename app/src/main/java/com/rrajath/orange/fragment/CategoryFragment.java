@@ -1,12 +1,16 @@
 package com.rrajath.orange.fragment;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -16,12 +20,16 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.rrajath.orange.R;
+import com.rrajath.orange.activity.WebViewActivity;
 import com.rrajath.orange.adapter.CategoryAdapter;
 import com.rrajath.orange.data.Item;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * Created by rrajath on 3/29/15.
@@ -30,8 +38,9 @@ public class CategoryFragment extends Fragment {
 
     private ArrayList<Item> items = new ArrayList<>();
     private CategoryAdapter adapter;
-    private RecyclerView categoryList;
-    private TextView loadingErrorText;
+    private ClickListener mClickListener;
+    @InjectView(R.id.category_list) RecyclerView categoryList;
+    @InjectView(R.id.loading_error_text) TextView loadingErrorText;
 
     public static Fragment newInstance(String url) {
         CategoryFragment fragment = new CategoryFragment();
@@ -89,7 +98,7 @@ public class CategoryFragment extends Fragment {
                             } else {
                                 // Parse JSON object
                                 Item item = setItem(result);
-                                if (item.getTitle().length() != 0) {
+                                if (item.title.length() != 0) {
                                     items.add(item);
                                     adapter.setItemList(items);
                                 }
@@ -102,27 +111,13 @@ public class CategoryFragment extends Fragment {
 
     private Item setItem(JsonObject result) {
         Item item = new Item();
-        item.setId(
-                isNull(result, "id") ? -1 : result.get("id").getAsLong()
-        );
-        item.setUsername(
-                isNull(result, "by") ? "" : result.get("by").getAsString()
-        );
-        item.setScore(
-                isNull(result, "score") ? 0 : result.get("score").getAsLong()
-        );
-        item.setTime(
-                isNull(result, "time") ? 0 : result.get("time").getAsLong()
-        );
-        item.setTitle(
-                isNull(result, "title") ? "" : result.get("title").getAsString()
-        );
-        item.setDescendants(
-                isNull(result, "descendants") ? 0 : result.get("descendants").getAsInt()
-        );
-        item.setUrl(
-                isNull(result, "url") ? "" : result.get("url").getAsString()
-        );
+        item.id = isNull(result, "id") ? -1 : result.get("id").getAsLong();
+        item.username = isNull(result, "by") ? "" : result.get("by").getAsString();
+        item.score = isNull(result, "score") ? 0 : result.get("score").getAsLong();
+        item.time = isNull(result, "time") ? 0 : result.get("time").getAsLong();
+        item.title = isNull(result, "title") ? "" : result.get("title").getAsString();
+        item.descendants = isNull(result, "descendants") ? 0 : result.get("descendants").getAsInt();
+        item.url = isNull(result, "url") ? "" : result.get("url").getAsString();
 
         return item;
     }
@@ -130,12 +125,18 @@ public class CategoryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.category_fragment, container, false);
-        categoryList = (RecyclerView) view.findViewById(R.id.category_list);
+        ButterKnife.inject(this, view);
         categoryList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        categoryList.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), categoryList, new ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                view.getContext().startActivity(new Intent(view.getContext(), WebViewActivity.class));
+            }
+        }));
+
         adapter = new CategoryAdapter(getActivity());
         categoryList.setAdapter(adapter);
         String url = getArguments().getString("url");
-        loadingErrorText = (TextView) view.findViewById(R.id.loading_error_text);
         if (savedInstanceState != null) {
             items = Parcels.unwrap(savedInstanceState.getParcelable("items"));
             adapter.setItemList(items);
@@ -153,4 +154,34 @@ public class CategoryFragment extends Fragment {
         return true;
     }
 
+    class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+        GestureDetector gestureDetector;
+        public RecyclerTouchListener(Context context, RecyclerView recyclerView, ClickListener clickListener) {
+            mClickListener = clickListener;
+            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
+                }
+            });
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+            View child = rv.findChildViewUnder(e.getX(), e.getY());
+            if (child != null && mClickListener != null && gestureDetector.onTouchEvent(e)) {
+                mClickListener.onClick(child, rv.getChildPosition(child));
+            }
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+        }
+    }
+
+    public static interface ClickListener {
+        public void onClick(View view, int position);
+    }
 }

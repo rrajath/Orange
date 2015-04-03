@@ -21,14 +21,15 @@ import butterknife.InjectView;
 /**
  * Created by rrajath on 3/31/15.
  */
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryItemViewHolder> {
 
     LayoutInflater inflater;
     ArrayList<Item> itemList = new ArrayList<>();
+    Context mContext;
 
     public CategoryAdapter(Context context) {
         inflater = LayoutInflater.from(context);
-
+        mContext = context;
     }
 
     public void setItemList(ArrayList<Item> itemList) {
@@ -37,20 +38,20 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     }
 
     @Override
-    public CategoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CategoryItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.category_list_item, parent, false);
-        CategoryViewHolder viewHolder = new CategoryViewHolder(view);
+        CategoryItemViewHolder viewHolder = new CategoryItemViewHolder(view);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(CategoryViewHolder holder, int position) {
+    public void onBindViewHolder(CategoryItemViewHolder holder, int position) {
         Item currentItem = itemList.get(position);
-        holder.title.setText(currentItem.getTitle());
-        holder.comments.setText("" + currentItem.getDescendants() + " comments");
-        holder.time.setText(DateUtils.getTimeElapsed(currentItem.getTime()));
+        holder.title.setText(currentItem.title);
+        holder.comments.setText("" + currentItem.descendants + " comments");
+        holder.time.setText(DateUtils.getTimeElapsed(currentItem.time));
         try {
-            holder.urlDomain.setText(new URL(currentItem.getUrl()).getHost());
+            holder.urlDomain.setText(new URL(currentItem.url).getHost());
         } catch (MalformedURLException e) {
             holder.urlDomain.setText("");
         }
@@ -61,13 +62,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         return itemList.size();
     }
 
-    public class CategoryViewHolder extends RecyclerView.ViewHolder {
+    public class CategoryItemViewHolder extends RecyclerView.ViewHolder {
         @InjectView(R.id.category_title) TextView title;
         @InjectView(R.id.category_num_comments) TextView comments;
         @InjectView(R.id.category_time_elapsed) TextView time;
         @InjectView(R.id.category_url) TextView urlDomain;
 
-        public CategoryViewHolder(View itemView) {
+
+        public CategoryItemViewHolder(View itemView) {
             super(itemView);
             ButterKnife.inject(this, itemView);
         }
