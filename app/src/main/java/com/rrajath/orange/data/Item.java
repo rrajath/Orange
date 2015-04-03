@@ -8,11 +8,12 @@ import lombok.Data;
  * Created by rrajath on 3/18/15.
  */
 
+@org.parceler.Parcel
 @Data
 public class Item {
     long id;
     boolean deleted;
-    Enum type;
+    String type;
     String username;
     long time;
     String text;

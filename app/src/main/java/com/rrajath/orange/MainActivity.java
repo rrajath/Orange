@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -19,7 +19,6 @@ import it.neokree.materialtabs.MaterialTabListener;
 public class MainActivity extends ActionBarActivity implements MaterialTabListener {
 
     private Toolbar mToolbar;
-    private SlidingTabLayout mSlidingTabs;
     private ViewPager mViewPager;
     private MaterialTabHost materialTabHost;
 
@@ -42,6 +41,7 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
         mViewPager = (ViewPager)findViewById(R.id.tab_pager);
         mViewPager.setAdapter(new SlidingTabsPagerAdapter(getSupportFragmentManager()));
         materialTabHost = (MaterialTabHost) findViewById(R.id.material_tab_host);
+        mViewPager.setOffscreenPageLimit(mViewPager.getAdapter().getCount() - 1);
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -55,17 +55,6 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
                             .setTabListener(this)
             );
         }
-
-/*
-        mSlidingTabs = (SlidingTabLayout) findViewById(R.id.);
-        mSlidingTabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-            @Override
-            public int getIndicatorColor(int position) {
-                return getResources().getColor(R.color.abc_primary_text_material_dark);
-            }
-        });
-        mSlidingTabs.setViewPager(mViewPager);
-*/
     }
 
     @Override
@@ -113,7 +102,7 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
 
     }
 
-    class SlidingTabsPagerAdapter extends FragmentPagerAdapter {
+    class SlidingTabsPagerAdapter extends FragmentStatePagerAdapter {
 
         String[] hnCategories;
         public SlidingTabsPagerAdapter(FragmentManager fm) {
@@ -128,7 +117,19 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
 
         @Override
         public Fragment getItem(int position) {
-            return CategoryFragment.newInstance();
+            switch (position) {
+                case 0:
+                    return CategoryFragment.newInstance("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty");
+                case 1:
+                    return CategoryFragment.newInstance("https://hacker-news.firebaseio.com/v0/newstories.json?print=pretty");
+                case 2:
+                    return CategoryFragment.newInstance("https://hacker-news.firebaseio.com/v0/askstories.json?print=pretty");
+                case 3:
+                    return CategoryFragment.newInstance("https://hacker-news.firebaseio.com/v0/showstories.json?print=pretty");
+                case 4:
+                    return CategoryFragment.newInstance("https://hacker-news.firebaseio.com/v0/jobstories.json?print=pretty");
+            }
+            return CategoryFragment.newInstance("");
         }
 
         @Override
