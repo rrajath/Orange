@@ -26,7 +26,7 @@
             android:layout_width="280dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:name="com.rrajath.orange.NavDrawerFragment"
+            android:name="com.rrajath.orange.fragment.NavDrawerFragment"
             app:layout="@layout/nav_drawer_fragment"
             tools:layout="@layout/nav_drawer_fragment"
             />

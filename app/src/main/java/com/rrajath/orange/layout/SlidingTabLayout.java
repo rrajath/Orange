@@ -1,4 +1,4 @@
-package com.rrajath.orange;
+package com.rrajath.orange.layout;
 
 /**
  * Created by rrajath on 3/29/15.
@@ -34,6 +34,8 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.rrajath.orange.R;
 
 /**
  * To be used with ViewPager to provide a tab indicator component which give constant feedback as to

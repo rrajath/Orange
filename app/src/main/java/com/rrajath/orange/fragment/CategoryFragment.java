@@ -1,4 +1,4 @@
-package com.rrajath.orange;
+package com.rrajath.orange.fragment;
 
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.rrajath.orange.R;
+import com.rrajath.orange.adapter.CategoryAdapter;
 import com.rrajath.orange.data.Item;
 
 import org.parceler.Parcels;
@@ -29,7 +30,7 @@ public class CategoryFragment extends Fragment {
 
     private ArrayList<Item> items = new ArrayList<>();
     private CategoryAdapter adapter;
-    private RecyclerView topStoriesList;
+    private RecyclerView categoryList;
     private TextView loadingErrorText;
 
     public static Fragment newInstance(String url) {
@@ -42,9 +43,9 @@ public class CategoryFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         Parcelable wrapped = Parcels.wrap(items);
         outState.putParcelable("items", wrapped);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class CategoryFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    private void fetchTopStories(String url) {
+    private void fetchStories(String url) {
         final ArrayList<Long> topStoryIds = new ArrayList<>();
         Ion.with(getActivity())
                 .load(url)
@@ -128,19 +129,18 @@ public class CategoryFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("Orange", "onCreateView called");
-        View view = inflater.inflate(R.layout.top_stories_fragment, container, false);
-        topStoriesList = (RecyclerView) view.findViewById(R.id.topStoriesList);
-        topStoriesList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        View view = inflater.inflate(R.layout.category_fragment, container, false);
+        categoryList = (RecyclerView) view.findViewById(R.id.category_list);
+        categoryList.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new CategoryAdapter(getActivity());
-        topStoriesList.setAdapter(adapter);
+        categoryList.setAdapter(adapter);
         String url = getArguments().getString("url");
         loadingErrorText = (TextView) view.findViewById(R.id.loading_error_text);
         if (savedInstanceState != null) {
             items = Parcels.unwrap(savedInstanceState.getParcelable("items"));
             adapter.setItemList(items);
         } else {
-            fetchTopStories(url);
+            fetchStories(url);
         }
         return view;
     }

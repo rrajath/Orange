@@ -1,4 +1,4 @@
-package com.rrajath.orange;
+package com.rrajath.orange.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.rrajath.orange.R;
 import com.rrajath.orange.data.NavDrawerItem;
 
 import java.util.Collections;

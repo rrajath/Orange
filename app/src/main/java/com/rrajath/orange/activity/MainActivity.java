@@ -1,4 +1,4 @@
-package com.rrajath.orange;
+package com.rrajath.orange.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.rrajath.orange.R;
+import com.rrajath.orange.fragment.CategoryFragment;
+import com.rrajath.orange.fragment.NavDrawerFragment;
+import com.rrajath.orange.utils.Constants;
 
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
@@ -119,15 +124,15 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return CategoryFragment.newInstance("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty");
+                    return CategoryFragment.newInstance(Constants.TOP_STORIES_URL);
                 case 1:
-                    return CategoryFragment.newInstance("https://hacker-news.firebaseio.com/v0/newstories.json?print=pretty");
+                    return CategoryFragment.newInstance(Constants.NEW_STORIES_URL);
                 case 2:
-                    return CategoryFragment.newInstance("https://hacker-news.firebaseio.com/v0/askstories.json?print=pretty");
+                    return CategoryFragment.newInstance(Constants.ASK_HN_URL);
                 case 3:
-                    return CategoryFragment.newInstance("https://hacker-news.firebaseio.com/v0/showstories.json?print=pretty");
+                    return CategoryFragment.newInstance(Constants.SHOW_HN_URL);
                 case 4:
-                    return CategoryFragment.newInstance("https://hacker-news.firebaseio.com/v0/jobstories.json?print=pretty");
+                    return CategoryFragment.newInstance(Constants.JOBS_HN_URL);
             }
             return CategoryFragment.newInstance("");
         }

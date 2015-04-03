@@ -1,4 +1,4 @@
-package com.rrajath.orange;
+package com.rrajath.orange.layout;
 
 /**
  * Created by rrajath on 3/29/15.
