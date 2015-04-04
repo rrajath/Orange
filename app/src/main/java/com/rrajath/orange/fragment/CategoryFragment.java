@@ -130,7 +130,10 @@ public class CategoryFragment extends Fragment {
         categoryList.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), categoryList, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                view.getContext().startActivity(new Intent(view.getContext(), WebViewActivity.class));
+                Item item = items.get(position);
+                Intent intent = new Intent(view.getContext(), WebViewActivity.class);
+                intent.putExtra("url", item.url);
+                view.getContext().startActivity(intent);
             }
         }));
 

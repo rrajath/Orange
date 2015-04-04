@@ -1,6 +1,7 @@
 package com.rrajath.orange.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +11,9 @@ import android.widget.TextView;
 import com.rrajath.orange.R;
 import com.rrajath.orange.data.Item;
 import com.rrajath.orange.utils.DateUtils;
+import com.rrajath.orange.utils.TextUtils;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
@@ -48,12 +49,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     public void onBindViewHolder(CategoryItemViewHolder holder, int position) {
         Item currentItem = itemList.get(position);
         holder.title.setText(currentItem.title);
-        holder.comments.setText("" + currentItem.descendants + " comments");
+        Resources resources = mContext.getResources();
+        String numComments = resources.getQuantityString(R.plurals.comments, currentItem.descendants, currentItem.descendants);
+        holder.comments.setText(numComments);
         holder.time.setText(DateUtils.getTimeElapsed(currentItem.time));
         try {
-            holder.urlDomain.setText(new URL(currentItem.url).getHost());
+            holder.urlDomain.setText(TextUtils.getUrlDomain(currentItem.url));
         } catch (MalformedURLException e) {
-            holder.urlDomain.setText("");
+            holder.urlDomain.setVisibility(View.GONE);
         }
     }
 
@@ -71,6 +74,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         public CategoryItemViewHolder(View itemView) {
             super(itemView);
+            itemView.setClickable(true);
             ButterKnife.inject(this, itemView);
         }
     }

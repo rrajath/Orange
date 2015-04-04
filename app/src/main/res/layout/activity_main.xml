@@ -24,15 +24,6 @@
             app:primaryColor="@color/primary_color"
             app:accentColor="@android:color/white" />
 
-<!--
-        <com.rrajath.orange.layout.SlidingTabLayout
-            android:id="@+id/sliding_tabs"
-            android:background="@color/primary_color"
-            android:elevation="@dimen/elevation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
--->
-
         <android.support.v4.view.ViewPager
             android:id="@+id/tab_pager"
             android:layout_height="0dp"

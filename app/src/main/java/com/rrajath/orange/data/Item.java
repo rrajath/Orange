@@ -23,5 +23,5 @@ public class Item {
     public long score;
     public String title;
     ArrayList<Long> parts;
-    public long descendants;
+    public int descendants;
 }
