@@ -63,7 +63,7 @@ public class CategoryFragment extends Fragment {
     }
 
     private void fetchStories(String url) {
-        final ArrayList<Long> topStoryIds = new ArrayList<>();
+        final ArrayList<Long> stories = new ArrayList<>();
         Ion.with(getActivity())
                 .load(url)
                 .asJsonArray()
@@ -72,22 +72,22 @@ public class CategoryFragment extends Fragment {
                     public void onCompleted(Exception e, JsonArray result) {
                         if (e != null) {
                             loadingErrorText.setVisibility(View.VISIBLE);
-                            loadingErrorText.setText("Error fetching top stories!");
+                            loadingErrorText.setText("Error fetching stories!");
                         } else {
                             for (int i = 0; i < 10; i++) {
-                                topStoryIds.add(result.get(i).getAsLong());
+                                stories.add(result.get(i).getAsLong());
                             }
-                            load(topStoryIds);
+                            load(stories);
                         }
                     }
                 });
 
     }
 
-    public void load(final ArrayList<Long> topStoryIds) {
-        for (int i = 0; i < topStoryIds.size(); i++) {
+    public void load(final ArrayList<Long> stories) {
+        for (int i = 0; i < stories.size(); i++) {
             Ion.with(getActivity())
-                    .load("https://hacker-news.firebaseio.com/v0/item/" + String.valueOf(topStoryIds.get(i)) + ".json?print=pretty")
+                    .load("https://hacker-news.firebaseio.com/v0/item/" + String.valueOf(stories.get(i)) + ".json?print=pretty")
                     .asJsonObject()
                     .setCallback(new FutureCallback<JsonObject>() {
                         @Override
@@ -131,9 +131,11 @@ public class CategoryFragment extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 Item item = items.get(position);
-                Intent intent = new Intent(view.getContext(), WebViewActivity.class);
-                intent.putExtra("url", item.url);
-                view.getContext().startActivity(intent);
+                if (!"".equals(item.url)) {
+                    Intent intent = new Intent(view.getContext(), WebViewActivity.class);
+                    intent.putExtra("url", item.url);
+                    view.getContext().startActivity(intent);
+                }
             }
         }));
 
