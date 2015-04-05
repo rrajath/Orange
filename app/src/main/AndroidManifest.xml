@@ -26,6 +26,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity"/>
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="130404d456e20837beb2d98acddfa00e2a2483b4" />
     </application>
 
 </manifest>

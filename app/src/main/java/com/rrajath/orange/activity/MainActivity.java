@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.crashlytics.android.Crashlytics;
 import com.rrajath.orange.R;
 import com.rrajath.orange.fragment.CategoryFragment;
 import com.rrajath.orange.fragment.NavDrawerFragment;
@@ -19,6 +20,7 @@ import com.rrajath.orange.utils.Constants;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import io.fabric.sdk.android.Fabric;
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
@@ -32,6 +34,7 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
 
         // Set main content view
         setContentView(R.layout.activity_main);

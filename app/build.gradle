@@ -1,4 +1,19 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 
 android {
     compileSdkVersion 21
@@ -32,4 +47,7 @@ dependencies {
     compile 'org.parceler:parceler-api:0.2.16'
     provided 'org.parceler:parceler:0.2.16'
     compile 'com.jakewharton:butterknife:6.1.0'
+    compile('com.crashlytics.sdk.android:crashlytics:2.2.3@aar') {
+        transitive = true;
+    }
 }
