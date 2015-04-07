@@ -3,7 +3,9 @@ package com.rrajath.orange.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +25,7 @@ public class WebViewActivity extends ActionBarActivity {
 
     @InjectView(R.id.app_bar) Toolbar toolbar;
     @InjectView(R.id.web_view) WebView webView;
+    private ShareActionProvider mShareActionProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +69,21 @@ public class WebViewActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_web_view, menu);
-        return true;
+        MenuItem item = menu.findItem(R.id.web_view_item_share);
+        mShareActionProvider = new ShareActionProvider(this);
+        MenuItemCompat.setActionProvider(item, mShareActionProvider);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+        if (mShareActionProvider != null) {
+            mShareActionProvider.setShareIntent(createShareIntent());
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private Intent createShareIntent() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "this text will be shared");
+        return shareIntent;
     }
 
     @Override
