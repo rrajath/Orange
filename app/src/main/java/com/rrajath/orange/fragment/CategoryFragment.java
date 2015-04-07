@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -16,9 +17,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.rrajath.orange.EndlessScrollListener;
 import com.rrajath.orange.R;
 import com.rrajath.orange.activity.WebViewActivity;
 import com.rrajath.orange.adapter.CategoryAdapter;
@@ -27,6 +30,7 @@ import com.rrajath.orange.data.Item;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -36,11 +40,13 @@ import butterknife.InjectView;
  */
 public class CategoryFragment extends Fragment {
 
+    public static final String TAG = CategoryFragment.class.getSimpleName();
     private ArrayList<Item> items = new ArrayList<>();
     private CategoryAdapter adapter;
     private ClickListener mClickListener;
     @InjectView(R.id.category_list) RecyclerView categoryList;
     @InjectView(R.id.loading_error_text) TextView loadingErrorText;
+    private ArrayList<Long> stories;
 
     public static Fragment newInstance(String url) {
         CategoryFragment fragment = new CategoryFragment();
@@ -52,8 +58,10 @@ public class CategoryFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Parcelable wrapped = Parcels.wrap(items);
-        outState.putParcelable("items", wrapped);
+        Parcelable wrappedItems = Parcels.wrap(items);
+        Parcelable wrappedStories = Parcels.wrap(stories);
+        outState.putParcelable("items", wrappedItems);
+        outState.putParcelable("stories", wrappedStories);
         super.onSaveInstanceState(outState);
     }
 
@@ -63,7 +71,7 @@ public class CategoryFragment extends Fragment {
     }
 
     private void fetchStories(String url) {
-        final ArrayList<Long> stories = new ArrayList<>();
+        stories = new ArrayList<>();
         Ion.with(getActivity())
                 .load(url)
                 .asJsonArray()
@@ -74,17 +82,17 @@ public class CategoryFragment extends Fragment {
                             loadingErrorText.setVisibility(View.VISIBLE);
                             loadingErrorText.setText("Error fetching stories!");
                         } else {
-                            for (int i = 0; i < 10; i++) {
-                                stories.add(result.get(i).getAsLong());
+                            for (JsonElement element : result) {
+                                stories.add(element.getAsLong());
                             }
-                            load(stories);
+                            load(stories.subList(0, 10));
                         }
                     }
                 });
 
     }
 
-    public void load(final ArrayList<Long> stories) {
+    public void load(final List<Long> stories) {
         for (int i = 0; i < stories.size(); i++) {
             Ion.with(getActivity())
                     .load("https://hacker-news.firebaseio.com/v0/item/" + String.valueOf(stories.get(i)) + ".json?print=pretty")
@@ -126,8 +134,9 @@ public class CategoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.category_fragment, container, false);
         ButterKnife.inject(this, view);
-        categoryList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        categoryList.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), categoryList, new ClickListener() {
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        categoryList.setLayoutManager(linearLayoutManager);
+        categoryList.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), new ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 Item item = items.get(position);
@@ -138,12 +147,28 @@ public class CategoryFragment extends Fragment {
                 }
             }
         }));
-
+        categoryList.setOnScrollListener(new EndlessScrollListener(linearLayoutManager) {
+            @Override
+            public void loadMore() {
+                // is more available?
+                int itemsLoaded = items.size();
+                if (stories.size() > (itemsLoaded + 10)) {
+                    itemsLoaded += 10;
+                    load(stories.subList(items.size(), itemsLoaded));
+                } else if (items.size() == stories.size()) {
+                    Log.d(TAG, "End of list");
+                } else {
+                    itemsLoaded = stories.size();
+                    load(stories.subList(items.size(), itemsLoaded));
+                }
+            }
+        });
         adapter = new CategoryAdapter(getActivity());
         categoryList.setAdapter(adapter);
         String url = getArguments().getString("url");
         if (savedInstanceState != null) {
             items = Parcels.unwrap(savedInstanceState.getParcelable("items"));
+            stories = Parcels.unwrap(savedInstanceState.getParcelable("stories"));
             adapter.setItemList(items);
         } else {
             fetchStories(url);
@@ -161,7 +186,7 @@ public class CategoryFragment extends Fragment {
 
     class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
         GestureDetector gestureDetector;
-        public RecyclerTouchListener(Context context, RecyclerView recyclerView, ClickListener clickListener) {
+        public RecyclerTouchListener(Context context, ClickListener clickListener) {
             mClickListener = clickListener;
             gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
                 @Override
@@ -186,7 +211,7 @@ public class CategoryFragment extends Fragment {
         }
     }
 
-    public static interface ClickListener {
-        public void onClick(View view, int position);
+    public interface ClickListener {
+        void onClick(View view, int position);
     }
 }

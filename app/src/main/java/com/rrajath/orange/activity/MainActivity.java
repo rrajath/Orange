@@ -65,7 +65,6 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
                             .setTabListener(this)
             );
         }
-        throw new RuntimeException("Forcing a crash to test debug builds");
     }
 
     @Override
