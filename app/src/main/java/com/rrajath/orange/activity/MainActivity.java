@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
+import com.rrajath.orange.BuildConfig;
 import com.rrajath.orange.R;
 import com.rrajath.orange.fragment.CategoryFragment;
 import com.rrajath.orange.fragment.NavDrawerFragment;
@@ -34,7 +35,8 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+        Crashlytics crashlytics = new Crashlytics.Builder().disabled(BuildConfig.DEBUG).build();
+        Fabric.with(this, crashlytics);
 
         // Set main content view
         setContentView(R.layout.activity_main);
@@ -63,6 +65,7 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
                             .setTabListener(this)
             );
         }
+        throw new RuntimeException("Forcing a crash to test debug builds");
     }
 
     @Override
