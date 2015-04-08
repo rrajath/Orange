@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -38,7 +39,7 @@ import butterknife.InjectView;
 /**
  * Created by rrajath on 3/29/15.
  */
-public class CategoryFragment extends Fragment {
+public class CategoryFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     public static final String TAG = CategoryFragment.class.getSimpleName();
     private ArrayList<Item> items = new ArrayList<>();
@@ -46,6 +47,7 @@ public class CategoryFragment extends Fragment {
     private ClickListener mClickListener;
     @InjectView(R.id.category_list) RecyclerView categoryList;
     @InjectView(R.id.loading_error_text) TextView loadingErrorText;
+    @InjectView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
     private ArrayList<Long> stories;
 
     public static Fragment newInstance(String url) {
@@ -71,7 +73,12 @@ public class CategoryFragment extends Fragment {
     }
 
     private void fetchStories(String url) {
-        stories = new ArrayList<>();
+        if (stories != null && items.size() != 0) {
+            stories.clear();
+            items.clear();
+        } else {
+            stories = new ArrayList<>();
+        }
         Ion.with(getActivity())
                 .load(url)
                 .asJsonArray()
@@ -86,6 +93,9 @@ public class CategoryFragment extends Fragment {
                                 stories.add(element.getAsLong());
                             }
                             load(stories.subList(0, 10));
+                            if (swipeRefreshLayout.isRefreshing()) {
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
                         }
                     }
                 });
@@ -134,6 +144,8 @@ public class CategoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.category_fragment, container, false);
         ButterKnife.inject(this, view);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeResources(R.color.primary_color);
         adapter = new CategoryAdapter(getActivity());
         categoryList.setAdapter(adapter);
         String url = getArguments().getString("url");
@@ -183,6 +195,11 @@ public class CategoryFragment extends Fragment {
                 return false;
         }
         return true;
+    }
+
+    @Override
+    public void onRefresh() {
+        fetchStories(getArguments().getString("url"));
     }
 
     class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
