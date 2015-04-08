@@ -15,13 +15,16 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.ProgressCallback;
 import com.rrajath.orange.EndlessScrollListener;
 import com.rrajath.orange.R;
 import com.rrajath.orange.activity.WebViewActivity;
@@ -48,7 +51,9 @@ public class CategoryFragment extends Fragment implements SwipeRefreshLayout.OnR
     @InjectView(R.id.category_list) RecyclerView categoryList;
     @InjectView(R.id.loading_error_text) TextView loadingErrorText;
     @InjectView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+    @InjectView(R.id.progress_bar) ProgressBar progressBar;
     private ArrayList<Long> stories;
+    private Future<JsonArray> downloading;
 
     public static Fragment newInstance(String url) {
         CategoryFragment fragment = new CategoryFragment();
@@ -79,8 +84,15 @@ public class CategoryFragment extends Fragment implements SwipeRefreshLayout.OnR
         } else {
             stories = new ArrayList<>();
         }
-        Ion.with(getActivity())
+        downloading = Ion.with(getActivity())
                 .load(url)
+                .progressBar(progressBar)
+                .progressHandler(new ProgressCallback() {
+                    @Override
+                    public void onProgress(long downloaded, long total) {
+                        progressBar.setVisibility(View.VISIBLE);
+                    }
+                })
                 .asJsonArray()
                 .setCallback(new FutureCallback<JsonArray>() {
                     @Override
@@ -96,10 +108,17 @@ public class CategoryFragment extends Fragment implements SwipeRefreshLayout.OnR
                             if (swipeRefreshLayout.isRefreshing()) {
                                 swipeRefreshLayout.setRefreshing(false);
                             }
+                            resetProgress();
                         }
                     }
                 });
 
+    }
+
+    private void resetProgress() {
+        downloading.cancel();
+        progressBar.setProgress(0);
+        progressBar.setVisibility(View.GONE);
     }
 
     public void load(final List<Long> stories) {
