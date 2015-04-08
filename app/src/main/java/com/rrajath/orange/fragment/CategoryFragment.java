@@ -134,6 +134,17 @@ public class CategoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.category_fragment, container, false);
         ButterKnife.inject(this, view);
+        adapter = new CategoryAdapter(getActivity());
+        categoryList.setAdapter(adapter);
+        String url = getArguments().getString("url");
+        if (savedInstanceState != null) {
+            items = Parcels.unwrap(savedInstanceState.getParcelable("items"));
+            stories = Parcels.unwrap(savedInstanceState.getParcelable("stories"));
+            adapter.setItemList(items);
+        } else {
+            fetchStories(url);
+        }
+
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         categoryList.setLayoutManager(linearLayoutManager);
         categoryList.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), new ClickListener() {
@@ -163,16 +174,6 @@ public class CategoryFragment extends Fragment {
                 }
             }
         });
-        adapter = new CategoryAdapter(getActivity());
-        categoryList.setAdapter(adapter);
-        String url = getArguments().getString("url");
-        if (savedInstanceState != null) {
-            items = Parcels.unwrap(savedInstanceState.getParcelable("items"));
-            stories = Parcels.unwrap(savedInstanceState.getParcelable("stories"));
-            adapter.setItemList(items);
-        } else {
-            fetchStories(url);
-        }
         return view;
     }
 
