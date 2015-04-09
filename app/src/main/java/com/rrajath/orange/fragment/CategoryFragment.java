@@ -101,6 +101,7 @@ public class CategoryFragment extends Fragment implements SwipeRefreshLayout.OnR
                             loadingErrorText.setVisibility(View.VISIBLE);
                             loadingErrorText.setText("Error fetching stories!");
                         } else {
+                            loadingErrorText.setVisibility(View.GONE);
                             for (JsonElement element : result) {
                                 stories.add(element.getAsLong());
                             }
@@ -133,6 +134,7 @@ public class CategoryFragment extends Fragment implements SwipeRefreshLayout.OnR
                                 loadingErrorText.setVisibility(View.VISIBLE);
                                 loadingErrorText.setText("Error fetching stories!");
                             } else {
+                                loadingErrorText.setVisibility(View.GONE);
                                 // Parse JSON object
                                 Item item = setItem(result);
                                 if (item.title.length() != 0) {
