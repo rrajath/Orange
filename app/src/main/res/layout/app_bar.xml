@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="?android:attr/actionBarSize"
     android:elevation="@dimen/elevation"
+    app:titleTextAppearance="@style/ToolbarTitle"
     android:background="@color/primary_color"
     app:theme="@style/OrangeToolBarTheme"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
