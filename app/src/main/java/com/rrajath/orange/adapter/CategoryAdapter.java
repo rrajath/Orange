@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.rrajath.orange.R;
 import com.rrajath.orange.data.Item;
+import com.rrajath.orange.utils.AnimationUtils;
 import com.rrajath.orange.utils.DateUtils;
 import com.rrajath.orange.utils.TextUtils;
 
@@ -27,6 +28,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     LayoutInflater inflater;
     ArrayList<Item> itemList = new ArrayList<>();
     Context mContext;
+    int lastPosition = -1;
 
     public CategoryAdapter(Context context) {
         inflater = LayoutInflater.from(context);
@@ -57,6 +59,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             holder.urlDomain.setText(TextUtils.getUrlDomain(currentItem.url));
         } catch (MalformedURLException e) {
             holder.urlDomain.setVisibility(View.GONE);
+        }
+
+        if (position > lastPosition) {
+            AnimationUtils.decelerate(mContext, holder);
+            lastPosition = position;
         }
     }
 
