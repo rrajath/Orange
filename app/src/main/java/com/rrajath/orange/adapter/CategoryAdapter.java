@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.rrajath.orange.R;
 import com.rrajath.orange.data.Item;
-import com.rrajath.orange.utils.AnimationUtils;
+import com.rrajath.orange.utils.Animations;
 import com.rrajath.orange.utils.DateUtils;
 import com.rrajath.orange.utils.TextUtils;
 
@@ -62,7 +62,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         }
 
         if (position > lastPosition) {
-            AnimationUtils.decelerate(mContext, holder);
+            Animations.fadeIn(mContext, holder);
             lastPosition = position;
         }
     }
