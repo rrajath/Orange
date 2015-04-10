@@ -45,6 +45,7 @@ public class WebViewActivity extends ActionBarActivity {
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setDisplayZoomControls(false);
 
         final WebViewActivity activity = this;
         webView.setWebChromeClient(new WebChromeClient() {
